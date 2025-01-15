@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+ 
+# Build output
+build/
+dist/
+
+# Temporary files
+*.cache
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# System files
+.DS_Store
+Thumbs.db
+
+
+# Python files
+*.py[cod]
+__pycache__/
+*.pyc
+*.so
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables
+.env
+*.env
+
+# Flask cache files
+instance/
+*.sqlite3
+
+# Logs
+*.log
+
+# Pytest cache
+.cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+*.cover
