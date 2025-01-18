@@ -81,3 +81,28 @@ def add_project():
     except Exception as e:
         logger.error("Error adding project: %s", e, exc_info=True)
         return jsonify({'error': 'An error occurred while saving the project'}), 500
+    
+    
+
+@addproject.route('/getAllProject', methods=['GET'])
+def getAllProjectList():
+    projects = Project.query.all()  # Query all projects
+    
+    project_list = []
+    for project in projects:
+        project_data = {
+            'id': project.id,
+            'title': project.title,
+            'programs': project.programs,
+            'directorate': project.directorate,
+            'technical_description': project.technical_description,
+            'start_date': project.start_date.strftime('%Y-%m-%d') if project.start_date else None,
+            'duration': project.duration,
+            'end_date': project.end_date.strftime('%Y-%m-%d') if project.end_date else None,
+            'status': project.status.value if project.status else "NOT SET",  # Handle NoneType for status
+            'code': project.code,
+        }
+        project_list.append(project_data)
+
+    return jsonify({'data': project_list}), 200
+    
