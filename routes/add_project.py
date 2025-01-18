@@ -105,4 +105,71 @@ def getAllProjectList():
         project_list.append(project_data)
 
     return jsonify({'data': project_list}), 200
-    
+
+
+# Get project by ID
+@addproject.route('/getProjectById/<int:id>/', methods=['GET'])
+def getSingleProject(id):
+    single_project = Project.query.get(id)  # Fetch the project by primary key
+
+    if not single_project:
+        return jsonify({'error': 'Project not found'}), 404
+
+    project_data = {
+        'id': single_project.id,
+        'title': single_project.title,
+        'programs': single_project.programs,
+        'directorate': single_project.directorate,
+        'technical_description': single_project.technical_description,
+        'start_date': single_project.start_date.strftime('%Y-%m-%d') if single_project.start_date else None,
+        'duration': single_project.duration,
+        'end_date': single_project.end_date.strftime('%Y-%m-%d') if single_project.end_date else None,
+        'status': single_project.status.value if single_project.status else "NOT SET",
+        'code': single_project.code,
+    }
+
+    return jsonify({'data': project_data}), 200
+
+
+@addproject.route('/updateProject/<int:id>/', methods=['PUT'])
+def updateProject(id):
+    # Fetch the project by ID
+    project = Project.query.get(id)
+    if not project:
+        return jsonify({'error': 'Project not found'}), 404
+
+    # Parse JSON data from the request
+    data = request.json
+
+    # Update fields if they are provided in the request
+    if 'title' in data:
+        project.title = data['title']
+    if 'programs' in data:
+        project.programs = data['programs']
+    if 'directorate' in data:
+        project.directorate = data['directorate']
+    if 'technical_description' in data:
+        project.technical_description = data['technical_description']
+    if 'start_date' in data:
+        project.start_date = data['start_date']  # Ensure the date format matches your model
+    if 'duration' in data:
+        project.duration = data['duration']
+    if 'end_date' in data:
+        project.end_date = data['end_date']  # Ensure the date format matches your model
+    if 'status' in data:
+        try:
+            # Convert the status to the Enum type
+            project.status = ProjectStatus[data['status']]
+        except KeyError:
+            return jsonify({'error': 'Invalid status value'}), 400
+    if 'code' in data:
+        project.code = data['code']
+
+    # Commit the changes to the database
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Project updated successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
