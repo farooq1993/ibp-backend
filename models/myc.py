@@ -1,5 +1,5 @@
 from utils.db_setup import db
-
+from models.project import Project
 class MultiYearCommitment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     financing_agreement_title = db.Column(db.String(255), nullable=False)
@@ -38,3 +38,23 @@ class MultiYearCommitment(db.Model):
     project_start_date = db.Column(db.Date, nullable=True)
     vote_code = db.Column(db.String(50), nullable=True)
     vote_name = db.Column(db.String(255), nullable=True)
+        # Foreign Key for Project
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    # Define Relationship
+    project = db.relationship(Project, back_populates='commitments')
+    
+    
+    def to_dict(self):
+        """Convert SQLAlchemy model to dictionary"""
+        data = {column.name: getattr(self, column.name) for column in self.__table__.columns}
+        
+        # Convert date fields to string format (YYYY-MM-DD)
+        for key in ['contract_start_date', 'contract_end_date']:
+            if data.get(key):
+                data[key] = data[key].strftime('%Y-%m-%d')
+
+        # Include Project Data
+        if self.project:
+            data['project'] = self.project.to_dict()
+
+        return data

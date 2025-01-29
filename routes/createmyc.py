@@ -63,7 +63,8 @@ def add_mycommitment():
 # GET: Retrieve all multi-year commitments or a specific one by ID
 @myc.route('/multi_year_commitment', methods=['GET'])
 def get_commitments():
-    commitment_id = request.args.get('id')  # Optional query parameter
+    commitment_id = request.args.get('id')
+
     if commitment_id:
         commitment = MultiYearCommitment.query.get(commitment_id)
         if not commitment:
@@ -72,6 +73,7 @@ def get_commitments():
     else:
         commitments = MultiYearCommitment.query.all()
         return jsonify([c.to_dict() for c in commitments]), 200
+
 
 
 # PATCH: Update specific fields of a commitment

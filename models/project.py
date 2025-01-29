@@ -14,6 +14,8 @@ class Project(db.Model):
     status = db.Column(db.Enum(ProjectStatus), default=ProjectStatus.DRAFT.value, nullable=False)
     code = db.Column(db.String(10), unique=True, nullable=False)
 
+    commitments = db.relationship('MultiYearCommitment', back_populates='project', cascade="all, delete-orphan")
+    
     @staticmethod
     def generate_code():
         last_project = db.session.query(Project).order_by(Project.id.desc()).first()
